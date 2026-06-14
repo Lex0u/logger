@@ -55,6 +55,32 @@ await logger.log.file(LogLevel.Warning, "Warning uniquement fichier", "API");
 
 ## 💬 Intégration Discord
 
+### Option A — Webhook (recommandé, aucun bot requis)
+
+La méthode la plus simple : crée un webhook dans les paramètres d'un salon Discord
+(**Paramètres du salon → Intégrations → Webhooks → Nouveau webhook**) et récupère son URL.
+
+```ts
+import { Logger, LogLevel } from '@lex0u/logger';
+
+const logger = new Logger({
+    console: { enabled: true },
+    discord: {
+        enabled:     true,
+        minLevel:    LogLevel.Warning,
+        destination: {
+            webhookUrl: process.env.DISCORD_WEBHOOK_URL!,
+        },
+    },
+});
+
+await logger.log(LogLevel.Error, "Erreur critique !", "DB");
+```
+
+Aucun token, aucun client, aucun `setDiscordClient` — l'envoi est direct.
+
+### Option B — Bot Discord (client requis)
+
 ```ts
 import { Logger, LogLevel } from '@lex0u/logger';
 import { Client, GatewayIntentBits } from 'discord.js';
@@ -64,9 +90,9 @@ const logger = new Logger({
     discord: {
         enabled:     true,
         minLevel:    LogLevel.Warning,
-        destination: { 
-            guildId: "...", 
-            channel: "..." 
+        destination: {
+            guildId: "...",
+            channel: "..."
         },
     },
 });
@@ -79,7 +105,8 @@ client.once("ready", () => {
 
 client.login(process.env.DISCORD_TOKEN);
 ```
-## 💬 Intégration Discord Optionnel
+
+### Option C — Intégration conditionnelle (bot, optionnelle selon l'environnement)
 
 ```ts
 import { Logger, LogLevel } from '@lex0u/logger';
@@ -109,6 +136,7 @@ const loggerConfig: LoggerConfig = {
     },
     ...(config.bot.logChannelId && config.bot.guildId ? { discord: discordConfig } : {}),
 };
+
 const logger = new Logger(loggerConfig);
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -118,6 +146,7 @@ client.once("ready", () => {
 
 client.login(process.env.DISCORD_TOKEN);
 ```
+
 ---
 
 ## 🧠 Log Levels
@@ -125,22 +154,24 @@ client.login(process.env.DISCORD_TOKEN);
 ```ts
 LogLevel.Debug
 LogLevel.Information
+LogLevel.Success
 LogLevel.Warning
 LogLevel.Error
+LogLevel.Fatal
 ```
 
 ---
 
 ## ✨ Features
 
-- ✅ Console logging
-- ✅ File logging
-- ✅ Discord logging
-- ✅ Async API
-- ✅ Metadata support
-- ✅ Per-destination log level
-- ✅ Queue system for Discord
-- ✅ Fully typed (TypeScript)
+- ✅ Logs console
+- ✅ Logs fichier
+- ✅ Logs Discord (bot ou webhook)
+- ✅ API asynchrone
+- ✅ Support des métadonnées
+- ✅ Niveau de log par destination
+- ✅ Système de file d'attente pour Discord
+- ✅ Entièrement typé (TypeScript)
 
 ---
 
@@ -174,7 +205,7 @@ npm run dev
 ### Guidelines
 
 - Utiliser TypeScript strict
-- Respecter l’architecture existante
+- Respecter l'architecture existante
 - Commits clairs (`feat:`, `fix:`, `refactor:`)
 - Pull Request descriptive
 
@@ -184,7 +215,6 @@ npm run dev
 
 - [ ] Rotation automatique des fichiers
 - [ ] Format custom
-- [ ] Webhook support
 - [ ] Logger middleware Express
 - [ ] Benchmarks
 
@@ -198,5 +228,4 @@ MIT © 2026 Lex0u
 
 ## ⭐ Support
 
-Si le projet t’aide, laisse une ⭐ sur GitHub !
-
+Si le projet t'aide, laisse une ⭐ sur GitHub !
