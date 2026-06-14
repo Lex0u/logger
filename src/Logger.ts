@@ -41,7 +41,7 @@ export class Logger {
         this.outputs = {
             console: config.console ? new ConsoleOutput(config.console) : null,
             file:    config.file    ? new FileOutput(config.file)       : null,
-            discord: (config.discord && discordClient)
+            discord: (config.discord && (discordClient || "webhookUrl" in config.discord.destination))
                 ? new DiscordOutput(config.discord, discordClient)
                 : null,
         };

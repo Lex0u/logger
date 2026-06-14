@@ -74,6 +74,12 @@ export class DiscordOutput implements ILogOutput {
         if (this.config.minLevel !== undefined && payload.level < this.config.minLevel) return;
         if (payload.tag && this.config.allowTags && !this.config.allowTags.includes(payload.tag)) return;
 
+        // Webhook : envoi direct, aucun client Discord requis
+        if ("webhookUrl" in this.config.destination) {
+            await this.send(payload);
+            return;
+        }
+
         // Client absent ou pas encore prêt → mise en queue
         if (!this.client?.isReady()) {
             if (this.queue.length < MAX_QUEUE_SIZE) {
@@ -106,7 +112,9 @@ export class DiscordOutput implements ILogOutput {
             const embed = this.buildEmbed(level, message, tag, infos);
             const dest  = this.config.destination;
 
-            if ("dmUserId" in dest) {
+            if ("webhookUrl" in dest) {
+                await this.sendWebhook(dest.webhookUrl, embed);
+            } else if ("dmUserId" in dest) {
                 await this.sendDM(dest.dmUserId, embed);
             } else {
                 await this.sendToGuild(dest, embed, tag);
@@ -159,6 +167,21 @@ export class DiscordOutput implements ILogOutput {
             await user.send({ embeds: [embed] });
         } catch {
             console.warn(`[Logger:Discord] Impossible d'envoyer un DM à ${userId}`);
+        }
+    }
+
+    /**
+     * Envoie un embed via un webhook Discord — aucun bot/client requis.
+     */
+    private async sendWebhook(webhookUrl: string, embed: APIEmbed): Promise<void> {
+        const res = await fetch(webhookUrl, {
+            method:  "POST",
+            headers: { "Content-Type": "application/json" },
+            body:    JSON.stringify({ embeds: [embed] }),
+        });
+
+        if (!res.ok) {
+            console.warn(`[Logger:Discord] Webhook a répondu ${res.status} ${res.statusText}`);
         }
     }
 

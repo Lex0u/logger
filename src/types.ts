@@ -123,7 +123,11 @@ export interface DiscordGuildConfig {
     category?: string;
 }
 
-export type DiscordDestination = DiscordDMConfig | DiscordGuildConfig;
+export interface DiscordWebhookConfig {
+    webhookUrl: string;
+}
+
+export type DiscordDestination = DiscordDMConfig | DiscordGuildConfig | DiscordWebhookConfig;
 
 export interface DiscordOutputConfig {
     enabled?:    boolean;

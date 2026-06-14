@@ -22,6 +22,7 @@ export {
     type DiscordOutputConfig,
     type DiscordDMConfig,
     type DiscordGuildConfig,
+    type DiscordWebhookConfig,
     type DiscordDestination,
     type IDiscordClient,
     // Interfaces
