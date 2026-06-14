@@ -213,10 +213,20 @@ npm run dev
 
 ## 📦 Roadmap
 
+## 📦 Roadmap
+
 - [ ] Rotation automatique des fichiers
 - [ ] Format custom
 - [ ] Logger middleware Express
 - [ ] Benchmarks
+- [ ] Sortie Slack / Telegram
+- [ ] Filtrage par regex sur le message
+- [ ] Mode silencieux global (kill switch)
+- [ ] Export des logs en JSON/CSV
+- [ ] Compression automatique des anciens logs (gzip)
+- [ ] Hooks `onLog` pour brancher des traitements custom
+- [ ] Rate limiting sur les sorties Discord (anti-spam)
+- [ ] Support des transports custom (plugin system)
 
 ---
 
