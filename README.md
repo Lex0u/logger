@@ -30,21 +30,23 @@ npm install @lex0u/logger
 ## ⚡ Quick Start
 
 ```ts
-import { Logger, LogLevel } from '@lex0u/logger';
+import { Logger, LogLevel } from "@lex0u/logger";
 
 const logger = new Logger({
-    console: {
-        enabled:  true,
-        minLevel: LogLevel.Debug,
-    },
-    file: {
-        enabled:    true,
-        folderPath: './logs',
-    },
+  console: {
+    enabled: true,
+    minLevel: LogLevel.Debug,
+  },
+  file: {
+    enabled: true,
+    folderPath: "./logs",
+  },
 });
 
 await logger.log(LogLevel.Information, "Serveur démarré", "App");
-await logger.log(LogLevel.Error, "Connexion échouée", "DB", { host: "localhost" });
+await logger.log(LogLevel.Error, "Connexion échouée", "DB", {
+  host: "localhost",
+});
 
 // Sortie ciblée
 await logger.log.console(LogLevel.Debug, "Debug uniquement console", "Auth");
@@ -55,92 +57,125 @@ await logger.log.file(LogLevel.Warning, "Warning uniquement fichier", "API");
 
 ## 💬 Intégration Discord
 
+### Option A — Webhook (recommandé, aucun bot requis)
+
+La méthode la plus simple : crée un webhook dans les paramètres d'un salon Discord
+(**Paramètres du salon → Intégrations → Webhooks → Nouveau webhook**) et récupère son URL.
+
 ```ts
-import { Logger, LogLevel } from '@lex0u/logger';
-import { Client, GatewayIntentBits } from 'discord.js';
+import { Logger, LogLevel } from "@lex0u/logger";
 
 const logger = new Logger({
-    console: { enabled: true },
-    discord: {
-        enabled:     true,
-        minLevel:    LogLevel.Warning,
-        destination: { 
-            guildId: "...", 
-            channel: "..." 
-        },
+  console: { enabled: true },
+  discord: {
+    enabled: true,
+    minLevel: LogLevel.Warning,
+    destination: {
+      webhookUrl: process.env.DISCORD_WEBHOOK_URL!,
     },
+  },
+});
+
+await logger.log(LogLevel.Error, "Erreur critique !", "DB");
+```
+
+Aucun token, aucun client, aucun `setDiscordClient` — l'envoi est direct.
+
+### Option B — Bot Discord (client requis)
+
+```ts
+import { Logger, LogLevel } from "@lex0u/logger";
+import { Client, GatewayIntentBits } from "discord.js";
+
+const logger = new Logger({
+  console: { enabled: true },
+  discord: {
+    enabled: true,
+    minLevel: LogLevel.Warning,
+    destination: {
+      guildId: "...",
+      channel: "...",
+    },
+  },
 });
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.once("ready", () => {
-    logger.setDiscordClient(client);
+  logger.setDiscordClient(client);
 });
 
 client.login(process.env.DISCORD_TOKEN);
 ```
-## 💬 Intégration Discord Optionnel
+
+### Option C — Intégration conditionnelle (bot, optionnelle selon l'environnement)
 
 ```ts
-import { Logger, LogLevel } from '@lex0u/logger';
-import { Client, GatewayIntentBits } from 'discord.js';
+import { Logger, LogLevel } from "@lex0u/logger";
+import { Client, GatewayIntentBits } from "discord.js";
 
 const discordConfig: DiscordOutputConfig = {
-    enabled:     config.isProd && !!config.bot.logChannelId,
-    minLevel:    LogLevel.Error,
-    destination: {
-        guildId: config.bot.guildId  ?? '',
-        channel: config.bot.logChannelId ?? '',
-    },
+  enabled: config.isProd && !!config.bot.logChannelId,
+  minLevel: LogLevel.Error,
+  destination: {
+    guildId: config.bot.guildId ?? "",
+    channel: config.bot.logChannelId ?? "",
+  },
 };
 
 const loggerConfig: LoggerConfig = {
-    console: {
-        enabled:  true,
-        minLevel: config.isDev ? LogLevel.Debug : LogLevel.Information,
-    },
-    file: {
-        enabled:      true,
-        folderPath:   './logs',
-        minLevel:     LogLevel.Information,
-        groupByLevel: true,
-        maxFileSize:  5_000_000,
-        maxDays:      config.isDev ? 7 : 30,
-    },
-    ...(config.bot.logChannelId && config.bot.guildId ? { discord: discordConfig } : {}),
+  console: {
+    enabled: true,
+    minLevel: config.isDev ? LogLevel.Debug : LogLevel.Information,
+  },
+  file: {
+    enabled: true,
+    folderPath: "./logs",
+    minLevel: LogLevel.Information,
+    groupByLevel: true,
+    maxFileSize: 5_000_000,
+    maxDays: config.isDev ? 7 : 30,
+  },
+  ...(config.bot.logChannelId && config.bot.guildId
+    ? { discord: discordConfig }
+    : {}),
 };
+
 const logger = new Logger(loggerConfig);
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.once("ready", () => {
-    logger.setDiscordClient(client);
+  logger.setDiscordClient(client);
 });
 
 client.login(process.env.DISCORD_TOKEN);
 ```
+
 ---
 
 ## 🧠 Log Levels
 
 ```ts
-LogLevel.Debug
-LogLevel.Information
-LogLevel.Warning
-LogLevel.Error
+LogLevel.Debug;
+LogLevel.Information;
+LogLevel.Success;
+LogLevel.Warning;
+LogLevel.Error;
+LogLevel.Fatal;
 ```
 
 ---
 
 ## ✨ Features
 
-- ✅ Console logging
-- ✅ File logging
-- ✅ Discord logging
-- ✅ Async API
-- ✅ Metadata support
-- ✅ Per-destination log level
-- ✅ Queue system for Discord
-- ✅ Fully typed (TypeScript)
+- ✅ Logs console
+- ✅ Logs fichier
+- ✅ Logs Discord (bot ou webhook)
+- ✅ API asynchrone
+- ✅ Support des métadonnées
+- ✅ Niveau de log par destination
+- ✅ Système de file d'attente pour Discord
+- ✅ Entièrement typé (TypeScript)
 
 ---
 
@@ -174,7 +209,7 @@ npm run dev
 ### Guidelines
 
 - Utiliser TypeScript strict
-- Respecter l’architecture existante
+- Respecter l'architecture existante
 - Commits clairs (`feat:`, `fix:`, `refactor:`)
 - Pull Request descriptive
 
@@ -182,11 +217,20 @@ npm run dev
 
 ## 📦 Roadmap
 
+## 📦 Roadmap
+
 - [ ] Rotation automatique des fichiers
 - [ ] Format custom
-- [ ] Webhook support
 - [ ] Logger middleware Express
 - [ ] Benchmarks
+- [ ] Sortie Slack / Telegram
+- [ ] Filtrage par regex sur le message
+- [ ] Mode silencieux global (kill switch)
+- [ ] Export des logs en JSON/CSV
+- [ ] Compression automatique des anciens logs (gzip)
+- [ ] Hooks `onLog` pour brancher des traitements custom
+- [ ] Rate limiting sur les sorties Discord (anti-spam)
+- [ ] Support des transports custom (plugin system)
 
 ---
 
@@ -198,5 +242,4 @@ MIT © 2026 Lex0u
 
 ## ⭐ Support
 
-Si le projet t’aide, laisse une ⭐ sur GitHub !
-
+Si le projet t'aide, laisse une ⭐ sur GitHub !
