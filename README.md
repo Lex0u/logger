@@ -85,6 +85,29 @@ Aucun token, aucun client, aucun `setDiscordClient` — l'envoi est direct.
 
 ```ts
 import { Logger, LogLevel } from "@lex0u/logger";
+
+const logger = new Logger({
+    console: { enabled: true },
+    discord: {
+        enabled:     true,
+        minLevel:    LogLevel.Warning,
+        destination: {
+            guildId: "...",
+            channel: "..."
+        },
+    },
+  },
+});
+
+await logger.log(LogLevel.Error, "Erreur critique !", "DB");
+```
+
+Aucun token, aucun client, aucun `setDiscordClient` — l'envoi est direct.
+
+### Option B — Bot Discord (client requis)
+
+```ts
+import { Logger, LogLevel } from "@lex0u/logger";
 import { Client, GatewayIntentBits } from "discord.js";
 
 const logger = new Logger({
