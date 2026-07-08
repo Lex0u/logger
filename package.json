@@ -1,6 +1,6 @@
 {
   "name": "@lex0u/logger",
-  "version": "2.0.3",
+  "version": "2.0.2",
   "description": "Logger complet et universel (Typescript)",
   "license": "MIT",
   "keywords": [
@@ -9,7 +9,7 @@
     "discord",
     "typescript"
   ],
-  "author": "Lex0u",
+  "author": "Lexou",
   "type": "commonjs",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -29,14 +29,14 @@
     "test:coverage": "vitest run --coverage"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "devDependencies": {
     "@types/chalk": "^0.4.31",
     "@types/node": "^25.2.3",
+    "@vitest/coverage-v8": "^3.0.0",
     "discord.js": "^14.26.4",
     "typescript": "^5.9.3",
-    "@vitest/coverage-v8": "^3.0.0",
     "vitest": "^3.0.0"
   },
   "peerDependencies": {
