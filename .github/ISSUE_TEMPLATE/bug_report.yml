@@ -2,6 +2,19 @@ name: 🐛 Bug report
 description: Signaler un comportement anormal du logger
 labels: ["bug"]
 body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Composant concerné
+      options:
+        - Console
+        - File
+        - Discord
+        - Core (Logger.ts)
+        - Autre / ne sais pas
+    validations:
+      required: true
+
   - type: textarea
     id: description
     attributes:

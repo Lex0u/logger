@@ -1,0 +1,24 @@
+name: 🔒 Security concern
+description: Suggestion de durcissement sécurité (non critique — pas une faille active)
+labels: ["security"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ⚠️ Si tu as trouvé une **faille active exploitable**, n'utilise pas ce template.
+        Suis plutôt la procédure de [SECURITY.md](../../SECURITY.md) (signalement privé).
+
+  - type: textarea
+    id: concern
+    attributes:
+      label: Préoccupation
+      description: Quelle pratique ou dépendance pourrait être renforcée ?
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggestion
+    validations:
+      required: false
