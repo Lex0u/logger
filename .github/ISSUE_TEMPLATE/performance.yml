@@ -1,0 +1,31 @@
+name: ⚡ Performance issue
+description: Signaler une lenteur, une fuite mémoire, ou proposer une optimisation
+labels: ["performance"]
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Composant concerné
+      options:
+        - Console
+        - File (rotation/écriture)
+        - Discord (queue/envoi)
+        - Core (Logger.ts)
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Quel est le comportement observé ? Dans quel contexte (volume de logs, fréquence) ?
+    validations:
+      required: true
+
+  - type: textarea
+    id: benchmark
+    attributes:
+      label: Mesures (si disponibles)
+      description: Temps d'exécution, mémoire utilisée, nombre de logs/seconde...
+    validations:
+      required: false

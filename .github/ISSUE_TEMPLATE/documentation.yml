@@ -1,0 +1,25 @@
+name: 📚 Documentation
+description: Erreur, imprécision ou manque dans le README / la doc
+labels: ["documentation"]
+body:
+  - type: input
+    id: location
+    attributes:
+      label: Où ?
+      placeholder: "README.md, section Installation"
+    validations:
+      required: true
+
+  - type: textarea
+    id: issue
+    attributes:
+      label: Qu'est-ce qui ne va pas ?
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggestion de correction (optionnel)
+    validations:
+      required: false
